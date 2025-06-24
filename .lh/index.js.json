@@ -1,0 +1,18 @@
+{
+    "sourceFile": "index.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1750266530788,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1750266530788,
+            "name": "Commit-0",
+            "content": "const express = require('express');\r\nconst bodyParser = require('body-parser');\r\nconst fs = require('fs');\r\nconst path = require('path');\r\nconst app = express();\r\nconst PORT = 3000;\r\n\r\napp.use(bodyParser.json({ limit: '50mb' }));\r\napp.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));\r\n\r\napp.use('/uploads', express.static(path.join(__dirname, 'uploads')));\r\n\r\n// Ensure uploads folder exists\r\nconst uploadDir = path.join(__dirname, 'uploads');\r\nif (!fs.existsSync(uploadDir)) {\r\n  fs.mkdirSync(uploadDir);\r\n}\r\n\r\n// Simulated database\r\nlet products = [];\r\nlet productIdCounter = 1;\r\nlet variantIdCounter = 101;\r\nlet imageIdCounter = 111;\r\n\r\n// Helper to save base64 image and return file path\r\nfunction saveBase64Image(base64Str, imageId) {\r\n  const matches = base64Str.match(/^data:(image\\/[a-zA-Z]+);base64,(.+)$/);\r\n  if (!matches) return null;\r\n\r\n  const ext = matches[1].split('/')[1]; // png, jpeg\r\n  const data = matches[2];\r\n  const filename = `image_${imageId}.${ext}`;\r\n  const filepath = path.join(uploadDir, filename);\r\n\r\n  fs.writeFileSync(filepath, Buffer.from(data, 'base64'));\r\n  return `uploads/${filename}`; // Public URL path\r\n}\r\n\r\n// API to create product\r\napp.post('/api/products', (req, res) => {\r\n  const payload = req.body;\r\n\r\n  const productId = productIdCounter++;\r\n  const product = {\r\n    id: productId,\r\n    title: payload.title,\r\n    description: payload.description,\r\n    type: payload.type,\r\n    brand: payload.brand,\r\n    collection: payload.collection || [],\r\n    category: payload.category,\r\n    price: Number(payload.price),\r\n    sale: payload.sale || false,\r\n    discount: payload.discount,\r\n    stock: Number(payload.stock),\r\n    new: payload.newProduct || false,\r\n    tags: [...(payload.tags || []), payload.brand || ''],\r\n    variants: [],\r\n    images: []\r\n  };\r\n\r\n  (payload[\"images Details\"] || []).forEach(image => {\r\n    const imageId = imageIdCounter++;\r\n    const variantIds = [];\r\n\r\n    // Save image to disk and get file path\r\n    const filePath = saveBase64Image(image.src, imageId);\r\n\r\n    image[\"variant Details\"].forEach(variant => {\r\n      const variantId = variantIdCounter++;\r\n\r\n      product.variants.push({\r\n        variant_id: variantId,\r\n        id: productId,\r\n        sku: variant.sku,\r\n        size: variant.size,\r\n        color: variant.color,\r\n        image_id: imageId\r\n      });\r\n\r\n      variantIds.push(variantId);\r\n    });\r\n\r\n    product.images.push({\r\n      image_id: imageId,\r\n      id: productId,\r\n      alt: image.alt,\r\n      src: filePath, // saved file path instead of base64\r\n      variant_id: variantIds\r\n    });\r\n  });\r\n\r\n  products.push(product);\r\n\r\n  res.status(201).json({\r\n    message: 'Product created and image saved successfully',\r\n    data: product\r\n  });\r\n});\r\n\r\n// Get all products\r\napp.get('/api/products', (req, res) => {\r\n  res.json(products);\r\n});\r\n\r\n// Start server\r\napp.listen(PORT, () => {\r\n  console.log(`🚀 Server running at http://localhost:${PORT}`);\r\n});\r\n"
+        }
+    ]
+}

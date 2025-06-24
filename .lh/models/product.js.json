@@ -1,0 +1,18 @@
+{
+    "sourceFile": "models/product.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1750266616571,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1750266616571,
+            "name": "Commit-0",
+            "content": "const mongoose = require('mongoose');\r\n\r\nconst VariantSchema = new mongoose.Schema({\r\n  sku: String,\r\n  size: String,\r\n  color: String,\r\n  image_id: Number\r\n});\r\n\r\nconst ImageSchema = new mongoose.Schema({\r\n  image_id: Number,\r\n  alt: String,\r\n  src: String,\r\n  variant_id: [Number]\r\n});\r\n\r\nconst ProductSchema = new mongoose.Schema({\r\n  title: String,\r\n  description: String,\r\n  type: String,\r\n  brand: String,\r\n  collection: [String],\r\n  category: String,\r\n  price: Number,\r\n  sale: Boolean,\r\n  discount: String,\r\n  stock: Number,\r\n  new: Boolean,\r\n  tags: [String],\r\n  variants: [VariantSchema],\r\n  images: [ImageSchema]\r\n});\r\n\r\nmodule.exports = mongoose.model('Product', ProductSchema);\r\n"
+        }
+    ]
+}
