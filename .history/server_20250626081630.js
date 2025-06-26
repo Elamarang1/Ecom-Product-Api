@@ -4,8 +4,9 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const Product = require('./models/product');
-
+var cors = require('cors')
 const app = express();
+app.use(cors('*'));
 const PORT = 3000;
 
 mongoose.connect('mongodb://localhost:27017/product_db', {
@@ -143,6 +144,7 @@ app.delete('/api/products/:id', async (req, res) => {
       const filePath = path.join(__dirname, img.src);
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     });
+    
 
     res.json({ message: 'Product deleted' });
   } catch (err) {
@@ -150,7 +152,23 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
+
+
 // START SERVER
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+

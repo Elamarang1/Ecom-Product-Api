@@ -155,6 +155,7 @@ app.delete('/api/products/:id', async (req, res) => {
 
 
 // START SERVER
+// test for test
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
