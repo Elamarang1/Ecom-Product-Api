@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 3,
+            "activePatchIndex": 4,
             "patches": [
                 {
                     "date": 1750214277307,
@@ -20,6 +20,10 @@
                 {
                     "date": 1750905990910,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,10 +3,11 @@\n const bodyParser = require('body-parser');\r\n const fs = require('fs');\r\n const path = require('path');\r\n const Product = require('./models/product');\r\n-\r\n+var cors = require('cors')\r\n const app = express();\r\n+app.use(cors('*'));\r\n const PORT = 3000;\r\n \r\n mongoose.connect('mongodb://localhost:27017/product_db', {\r\n   useNewUrlParser: true,\r\n@@ -142,15 +143,32 @@\n     deleted.images.forEach(img => {\r\n       const filePath = path.join(__dirname, img.src);\r\n       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);\r\n     });\r\n+    \r\n \r\n     res.json({ message: 'Product deleted' });\r\n   } catch (err) {\r\n     res.status(500).json({ error: err.message });\r\n   }\r\n });\r\n \r\n+\r\n+\r\n // START SERVER\r\n app.listen(PORT, () => {\r\n   console.log(`🚀 Server running on http://localhost:${PORT}`);\r\n });\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n+\r\n"
+                },
+                {
+                    "date": 1750907125284,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -154,8 +154,9 @@\n \r\n \r\n \r\n // START SERVER\r\n+// test\r\n app.listen(PORT, () => {\r\n   console.log(`🚀 Server running on http://localhost:${PORT}`);\r\n });\r\n \r\n"
                 }
             ],
             "date": 1750214277307,
