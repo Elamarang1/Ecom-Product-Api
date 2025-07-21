@@ -1,0 +1,18 @@
+{
+    "sourceFile": ".gitignore",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1753068829736,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1753068829736,
+            "name": "Commit-0",
+            "content": "# BAD: This will ignore all images\r\n*.png\r\n*.jpg\r\n*.jpeg\r\n*.gif\r\n"
+        }
+    ]
+}
