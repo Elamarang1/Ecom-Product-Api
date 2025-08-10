@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 19,
+            "activePatchIndex": 20,
             "patches": [
                 {
                     "date": 1750214277307,
@@ -84,6 +84,10 @@
                 {
                     "date": 1754804030539,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n   key_id: 'rzp_test_GYgMTUS1iaCs6o',\r\n   key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',\r\n });\r\n \r\n-mongoose.connect('mongodb://127.0.0.1:27017/product_db', {\r\n+mongoose.connect('mongodb+srv://softguiding:1uGWqXpyeGkZVYXf@cluster0.vzuo5fk.mongodb.net/product_db', {\r\n   useNewUrlParser: true,\r\n   useUnifiedTopology: true\r\n }).then(() => console.log('✅ MongoDB Connected'))\r\n   .catch(err => console.error('❌ MongoDB Error:', err));\r\n"
+                },
+                {
+                    "date": 1754805973096,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,14 +27,20 @@\n   key_id: 'rzp_test_GYgMTUS1iaCs6o',\r\n   key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',\r\n });\r\n \r\n-mongoose.connect('mongodb+srv://softguiding:1uGWqXpyeGkZVYXf@cluster0.vzuo5fk.mongodb.net/product_db', {\r\n-  useNewUrlParser: true,\r\n-  useUnifiedTopology: true\r\n-}).then(() => console.log('✅ MongoDB Connected'))\r\n-  .catch(err => console.error('❌ MongoDB Error:', err));\r\n+mongoose.connect(\r\n+  'mongodb+srv://softguiding:1uGWqXpyeGkZVYXf@cluster0.vzuo5fk.mongodb.net/product_db?retryWrites=true&w=majority',\r\n+  {\r\n+    useNewUrlParser: true,\r\n+    useUnifiedTopology: true,\r\n+    serverSelectionTimeoutMS: 30000\r\n+  }\r\n+)\r\n+.then(() => console.log('✅ MongoDB Connected'))\r\n+.catch(err => console.error('❌ MongoDB Error:', err));\r\n \r\n+\r\n app.use(bodyParser.json({ limit: '50mb' }));\r\n app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));\r\n app.use('/uploads', express.static(path.join(__dirname, 'uploads')));\r\n \r\n"
                 }
             ],
             "date": 1750214277307,
