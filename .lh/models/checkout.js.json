@@ -1,0 +1,22 @@
+{
+    "sourceFile": "models/checkout.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1754668521324,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1754668866182,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,22 +1,51 @@\n const mongoose = require('mongoose');\r\n \r\n-const checkoutSchema = new mongoose.Schema({\r\n-  customerName: { type: String, required: true },\r\n+const VariantSchema = new mongoose.Schema({\r\n+  sku: String,\r\n+  size: String,\r\n+  color: String,\r\n+  image_id: Number\r\n+}, { _id: false });\r\n+\r\n+const ImageSchema = new mongoose.Schema({\r\n+  image_id: Number,\r\n+  alt: String,\r\n+  src: String,\r\n+  variant_id: [Number]\r\n+}, { _id: false });\r\n+\r\n+const ProductSchema = new mongoose.Schema({\r\n+  _id: String,\r\n+  title: String,\r\n+  description: String,\r\n+  type: String,\r\n+  brand: String,\r\n+  collection: [String],\r\n+  category: String,\r\n+  price: Number,\r\n+  sale: Boolean,\r\n+  discount: String,\r\n+  stock: Number,\r\n+  new: Boolean,\r\n+  tags: [String],\r\n+  variants: [VariantSchema],\r\n+  images: [ImageSchema],\r\n+  __v: Number,\r\n+  quantity: Number\r\n+}, { _id: false });\r\n+\r\n+const CheckoutSchema = new mongoose.Schema({\r\n+  firstname: { type: String, required: true },\r\n+  lastname: { type: String, required: true },\r\n   email: { type: String, required: true },\r\n   phone: { type: String, required: true },\r\n+  country: { type: String, required: true },\r\n   address: { type: String, required: true },\r\n-  products: [\r\n-    {\r\n-      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },\r\n-      quantity: { type: Number, required: true },\r\n-      price: { type: Number, required: true }\r\n-    }\r\n-  ],\r\n-  totalAmount: { type: Number, required: true },\r\n-  paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },\r\n-  razorpayOrderId: { type: String },\r\n-  razorpayPaymentId: { type: String },\r\n-  createdAt: { type: Date, default: Date.now }\r\n-});\r\n+  town: { type: String, required: true },\r\n+  state: { type: String, required: true },\r\n+  postalcode: { type: String, required: true },\r\n+  paymentMethod: { type: String, required: true },\r\n+  products: [ProductSchema],\r\n+}, { timestamps: true });\r\n \r\n-module.exports = mongoose.model('Checkout', checkoutSchema);\r\n+module.exports = mongoose.model('Checkout', CheckoutSchema);\r\n"
+                }
+            ],
+            "date": 1754668521324,
+            "name": "Commit-0",
+            "content": "const mongoose = require('mongoose');\r\n\r\nconst checkoutSchema = new mongoose.Schema({\r\n  customerName: { type: String, required: true },\r\n  email: { type: String, required: true },\r\n  phone: { type: String, required: true },\r\n  address: { type: String, required: true },\r\n  products: [\r\n    {\r\n      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },\r\n      quantity: { type: Number, required: true },\r\n      price: { type: Number, required: true }\r\n    }\r\n  ],\r\n  totalAmount: { type: Number, required: true },\r\n  paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },\r\n  razorpayOrderId: { type: String },\r\n  razorpayPaymentId: { type: String },\r\n  createdAt: { type: Date, default: Date.now }\r\n});\r\n\r\nmodule.exports = mongoose.model('Checkout', checkoutSchema);\r\n"
+        }
+    ]
+}

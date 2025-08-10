@@ -5,7 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const Razorpay = require('razorpay');
 const Product = require('./models/product');
-const checkoutRoutes = require('./routes/checkout');
 var cors = require('cors')
 const app = express();
 app.use(cors('*'));
@@ -60,10 +59,6 @@ function saveBase64Image(base64Str, imageId) {
   fs.writeFileSync(filepath, Buffer.from(data, 'base64'));
   return `uploads/${filename}`;
 }
-
-
-
-
 
 // CREATE
 app.post('/api/products', async (req, res) => {
@@ -308,12 +303,6 @@ app.post('/api/razorpay/order', async (req, res) => {
     res.status(500).json({ error: 'Failed to create Razorpay order' });
   }
 });
-
-
-
-
-
-app.use('/api/checkout', checkoutRoutes);
 
 // START SERVER
 app.listen(PORT, () => {
