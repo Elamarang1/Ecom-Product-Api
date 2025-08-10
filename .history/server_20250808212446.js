@@ -28,7 +28,7 @@ const razorpay = new Razorpay({
   key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',
 });
 
-mongoose.connect('mongodb+srv://softguiding:1uGWqXpyeGkZVYXf@cluster0.vzuo5fk.mongodb.net/product_db', {
+mongoose.connect('mongodb://127.0.0.1:27017/product_db', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log('✅ MongoDB Connected'))

@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 18,
+            "activePatchIndex": 19,
             "patches": [
                 {
                     "date": 1750214277307,
@@ -80,6 +80,10 @@
                 {
                     "date": 1754668487948,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,9 @@\n const fs = require('fs');\r\n const path = require('path');\r\n const Razorpay = require('razorpay');\r\n const Product = require('./models/product');\r\n+const checkoutRoutes = require('./routes/checkout');\r\n var cors = require('cors')\r\n const app = express();\r\n app.use(cors('*'));\r\n const PORT = 3000;\r\n@@ -59,8 +60,12 @@\n   fs.writeFileSync(filepath, Buffer.from(data, 'base64'));\r\n   return `uploads/${filename}`;\r\n }\r\n \r\n+\r\n+\r\n+\r\n+\r\n // CREATE\r\n app.post('/api/products', async (req, res) => {\r\n   try {\r\n     const payload = req.body;\r\n@@ -303,8 +308,14 @@\n     res.status(500).json({ error: 'Failed to create Razorpay order' });\r\n   }\r\n });\r\n \r\n+\r\n+\r\n+\r\n+\r\n+app.use('/api/checkout', checkoutRoutes);\r\n+\r\n // START SERVER\r\n app.listen(PORT, () => {\r\n   console.log(`🚀 Server running on http://localhost:${PORT}`);\r\n });\r\n"
+                },
+                {
+                    "date": 1754804030539,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n   key_id: 'rzp_test_GYgMTUS1iaCs6o',\r\n   key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',\r\n });\r\n \r\n-mongoose.connect('mongodb://127.0.0.1:27017/product_db', {\r\n+mongoose.connect('mongodb+srv://softguiding:1uGWqXpyeGkZVYXf@cluster0.vzuo5fk.mongodb.net/product_db', {\r\n   useNewUrlParser: true,\r\n   useUnifiedTopology: true\r\n }).then(() => console.log('✅ MongoDB Connected'))\r\n   .catch(err => console.error('❌ MongoDB Error:', err));\r\n"
                 }
             ],
             "date": 1750214277307,
