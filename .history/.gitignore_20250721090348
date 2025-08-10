@@ -1,5 +1,5 @@
 # BAD: This will ignore all images
-# *.png
-# *.jpg
-# *.jpeg
+*.png
+*.jpg
+*.jpeg
 *.gif
