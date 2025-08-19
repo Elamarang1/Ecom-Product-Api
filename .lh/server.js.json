@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 28,
+            "activePatchIndex": 29,
             "patches": [
                 {
                     "date": 1750214277307,
@@ -120,6 +120,10 @@
                 {
                     "date": 1754824514252,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,9 @@\n // Cloudinary config\r\n cloudinary.config({\r\n   cloud_name: 'dr0ami0f0',\r\n   api_key: '814353659674167',\r\n-  api_secret: '**********'\r\n+  api_secret: 'wRTuc5wN8tMhhvPO99zc0a73qv4'\r\n });\r\n \r\n \r\n const multer = require('multer');\r\n"
+                },
+                {
+                    "date": 1755613168900,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -36,10 +36,10 @@\n const upload = multer({ storage: storage });\r\n \r\n \r\n const razorpay = new Razorpay({\r\n-  key_id: 'rzp_test_GYgMTUS1iaCs6o',\r\n-  key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',\r\n+  key_id: 'rzp_live_R7CILED5jrwg1o',\r\n+  key_secret: 'bGKhX4qlJMVSYOsVfFTu85Gh',\r\n });\r\n \r\n mongoose.connect(\r\n   'mongodb+srv://softguiding:1uGWqXpyeGkZVYXf@cluster0.vzuo5fk.mongodb.net/product_db?retryWrites=true&w=majority',\r\n"
                 }
             ],
             "date": 1750214277307,

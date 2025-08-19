@@ -6,10 +6,23 @@ const path = require('path');
 const Razorpay = require('razorpay');
 const Product = require('./models/product');
 const checkoutRoutes = require('./routes/checkout');
+const cloudinary = require('cloudinary').v2;
 var cors = require('cors')
 const app = express();
 app.use(cors('*'));
 const PORT = 3000;
+
+
+
+
+// Cloudinary config
+cloudinary.config({
+  cloud_name: 'dr0ami0f0',
+  api_key: '814353659674167',
+  api_secret: 'wRTuc5wN8tMhhvPO99zc0a73qv4'
+});
+
+
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,8 +37,8 @@ const upload = multer({ storage: storage });
 
 
 const razorpay = new Razorpay({
-  key_id: 'rzp_test_GYgMTUS1iaCs6o',
-  key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',
+  key_id: 'rzp_live_R7CILED5jrwg1o',
+  key_secret: 'bGKhX4qlJMVSYOsVfFTu85Gh',
 });
 
 mongoose.connect(
@@ -44,6 +57,10 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+
+// let imageIdCounter = 111;
+// let variantIdCounter = 101;
+
 // Create uploads directory if not exists
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -52,6 +69,23 @@ if (!fs.existsSync(uploadDir)) {
 
 let imageIdCounter = 111;
 let variantIdCounter = 101;
+
+
+
+// Helper: Upload Base64 image to Cloudinary
+async function uploadToCloudinary(base64Str, imageId) {
+  try {
+    const result = await cloudinary.uploader.upload(base64Str, {
+      folder: 'products',
+      public_id: `image_${imageId}`,
+      overwrite: true
+    });
+    return result.secure_url;
+  } catch (err) {
+    console.error('❌ Cloudinary Upload Error:', err);
+    return null;
+  }
+}
 
 // Helper: Save image
 function saveBase64Image(base64Str, imageId) {
@@ -72,6 +106,65 @@ function saveBase64Image(base64Str, imageId) {
 
 
 // CREATE
+// app.post('/api/products', async (req, res) => {
+//   try {
+//     const payload = req.body;
+
+//     const images = [];
+//     const variants = [];
+
+//     (payload["images Details"] || []).forEach(image => {
+//       const imageId = imageIdCounter++;
+//       const variantIds = [];
+
+//       const filePath = saveBase64Image(image.src, imageId);
+
+//       image["variant Details"].forEach(variant => {
+//         const variantId = variantIdCounter++;
+//         variants.push({
+//           sku: variant.sku,
+//           size: variant.size,
+//           color: variant.color,
+//           image_id: imageId
+//         });
+//         variantIds.push(variantId);
+//       });
+
+//       images.push({
+//         image_id: imageId,
+//         alt: image.alt,
+//         src: filePath,
+//         variant_id: variantIds
+//       });
+//     });
+
+//     const product = new Product({
+//       title: payload.title,
+//       description: payload.description,
+//       type: payload.type,
+//       brand: payload.brand,
+//       collection: payload.collection || [],
+//       category: payload.category,
+//       price: Number(payload.price),
+//       sale: payload.sale || false,
+//       discount: payload.discount,
+//       stock: Number(payload.stock),
+//       new: payload.newProduct || false,
+//       tags: [...(payload.tags || []), payload.brand || ''],
+//       variants,
+//       images
+//     });
+
+//     await product.save();
+//     res.status(201).json({ message: 'Product created', data: product });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+
+
+// CREATE product
 app.post('/api/products', async (req, res) => {
   try {
     const payload = req.body;
@@ -79,13 +172,13 @@ app.post('/api/products', async (req, res) => {
     const images = [];
     const variants = [];
 
-    (payload["images Details"] || []).forEach(image => {
+    for (const image of (payload["images Details"] || [])) {
       const imageId = imageIdCounter++;
       const variantIds = [];
 
-      const filePath = saveBase64Image(image.src, imageId);
+      const fileUrl = await uploadToCloudinary(image.src, imageId);
 
-      image["variant Details"].forEach(variant => {
+      for (const variant of image["variant Details"]) {
         const variantId = variantIdCounter++;
         variants.push({
           sku: variant.sku,
@@ -94,15 +187,15 @@ app.post('/api/products', async (req, res) => {
           image_id: imageId
         });
         variantIds.push(variantId);
-      });
+      }
 
       images.push({
         image_id: imageId,
         alt: image.alt,
-        src: filePath,
+        src: fileUrl,
         variant_id: variantIds
       });
-    });
+    }
 
     const product = new Product({
       title: payload.title,
@@ -127,6 +220,9 @@ app.post('/api/products', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+
 
 // FILTER PRODUCTS by brand, minPrice, maxPrice
 app.get('/api/products/filter', async (req, res) => {
@@ -186,24 +282,99 @@ app.get('/api/products/:id', async (req, res) => {
 
 
 
+// app.put('/api/products/:id', async (req, res) => {
+//   try {
+//     const payload = req.body;
+
+//     const images = [];
+//     const variants = [];
+
+//     (payload["images Details"] || []).forEach(image => {
+//       const imageId = imageIdCounter++;
+//       const variantIds = [];
+
+//       let filePath = image.src;
+
+//       if (image.src && image.src.startsWith("data:image")) {
+//         filePath = saveBase64Image(image.src, imageId);
+//       }
+
+//       image["variant Details"].forEach(variant => {
+//         const variantId = variantIdCounter++;
+//         variants.push({
+//           sku: variant.sku,
+//           size: variant.size,
+//           color: variant.color,
+//           image_id: imageId
+//         });
+//         variantIds.push(variantId);
+//       });
+
+//       images.push({
+//         image_id: imageId,
+//         alt: image.alt || 'image not found.',
+//         src: filePath,
+//         variant_id: variantIds
+//       });
+//     });
+
+//     const updated = await Product.findByIdAndUpdate(
+//       req.params.id,
+//       {
+//         title: payload.title,
+//         description: payload.description,
+//         type: payload.type,
+//         brand: payload.brand,
+//         collection: payload.collection || [],
+//         category: payload.category,
+//         price: Number(payload.price),
+//         sale: payload.sale || false,
+//         discount: payload.discount,
+//         stock: Number(payload.stock),
+//         new: payload.newProduct || false,
+//         tags: [...(payload.tags || []), payload.brand || ''],
+//         variants,
+//         images
+//       },
+//       { new: true }
+//     );
+
+//     if (!updated) return res.status(404).json({ error: 'Product not found' });
+
+//     res.json({ message: 'Product updated', data: updated });
+//   } catch (err) {
+//     console.error('Update Error:', err);
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+
+
+
+
+
+// DELETE
+
+
+
+
+// UPDATE product
 app.put('/api/products/:id', async (req, res) => {
   try {
     const payload = req.body;
-
     const images = [];
     const variants = [];
 
-    (payload["images Details"] || []).forEach(image => {
+    for (const image of (payload["images Details"] || [])) {
       const imageId = imageIdCounter++;
       const variantIds = [];
 
-      let filePath = image.src;
-
+      let fileUrl = image.src;
       if (image.src && image.src.startsWith("data:image")) {
-        filePath = saveBase64Image(image.src, imageId);
+        fileUrl = await uploadToCloudinary(image.src, imageId);
       }
 
-      image["variant Details"].forEach(variant => {
+      for (const variant of image["variant Details"]) {
         const variantId = variantIdCounter++;
         variants.push({
           sku: variant.sku,
@@ -212,15 +383,15 @@ app.put('/api/products/:id', async (req, res) => {
           image_id: imageId
         });
         variantIds.push(variantId);
-      });
+      }
 
       images.push({
         image_id: imageId,
         alt: image.alt || 'image not found.',
-        src: filePath,
+        src: fileUrl,
         variant_id: variantIds
       });
-    });
+    }
 
     const updated = await Product.findByIdAndUpdate(
       req.params.id,
@@ -247,14 +418,12 @@ app.put('/api/products/:id', async (req, res) => {
 
     res.json({ message: 'Product updated', data: updated });
   } catch (err) {
-    console.error('Update Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
 
 
-// DELETE
 app.delete('/api/products/:id', async (req, res) => {
   try {
     const deleted = await Product.findByIdAndDelete(req.params.id);

@@ -37,8 +37,8 @@ const upload = multer({ storage: storage });
 
 
 const razorpay = new Razorpay({
-  key_id: 'rzp_test_GYgMTUS1iaCs6o',
-  key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',
+  key_id: 'rzp_live_R7CILED5jrwg1o',
+  key_secret: 'bGKhX4qlJMVSYOsVfFTu85Gh',
 });
 
 mongoose.connect(
