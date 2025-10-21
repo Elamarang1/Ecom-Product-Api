@@ -1,0 +1,50 @@
+{
+    "sourceFile": "routes/shipping.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 8,
+            "patches": [
+                {
+                    "date": 1756220656094,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756220825775,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,15 +2,28 @@\n const router = express.Router();\r\n \r\n \r\n \r\n+app.post(\"/api/shipping-rate\", async (req, res) => {\r\n+  const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n \r\n-// Create new checkout\r\n-router.post('/', async (req, res) => {\r\n-  try {\r\n-    const checkout = new Checkout(req.body);\r\n-    await checkout.save();\r\n-    res.status(201).json({ message: 'Checkout created successfully', data: checkout });\r\n-  } catch (error) {\r\n-    res.status(400).json({ message: 'Error creating checkout', error: error.message });\r\n\\ No newline at end of file\n-  }\r\n-});\n+  const response = await fetch(\r\n+    \"https://apiv2.shiprocket.in/v1/external/courier/serviceability/\",\r\n+    {\r\n+      method: \"POST\",\r\n+      headers: {\r\n+        \"Content-Type\": \"application/json\",\r\n+        \"Authorization\": `Bearer ${process.env.SHIPROCKET_TOKEN}`,\r\n+      },\r\n+      body: JSON.stringify({\r\n+        pickup_postcode,\r\n+        delivery_postcode,\r\n+        cod,\r\n+        weight,\r\n+      }),\r\n+    }\r\n+  );\r\n+\r\n+  const data = await response.json();\r\n+  res.json(data);\r\n+});\r\n+\r\n"
+                },
+                {
+                    "date": 1756220846241,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,29 +1,47 @@\n-const express = require('express');\r\n+const express = require(\"express\");\r\n const router = express.Router();\r\n+const fetch = require(\"node-fetch\"); // If using Node <18, install with `npm i node-fetch`\r\n \r\n+// Shiprocket Shipping Rate API\r\n+router.post(\"/api/shipping-rate\", async (req, res) => {\r\n+  try {\r\n+    const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n \r\n+    if (!pickup_postcode || !delivery_postcode || !weight) {\r\n+      return res.status(400).json({ error: \"Missing required fields\" });\r\n+    }\r\n \r\n-app.post(\"/api/shipping-rate\", async (req, res) => {\r\n-  const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n+    const response = await fetch(\r\n+      \"https://apiv2.shiprocket.in/v1/external/courier/serviceability/\",\r\n+      {\r\n+        method: \"POST\",\r\n+        headers: {\r\n+          \"Content-Type\": \"application/json\",\r\n+          Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`, // Make sure you set this in .env\r\n+        },\r\n+        body: JSON.stringify({\r\n+          pickup_postcode,\r\n+          delivery_postcode,\r\n+          cod: cod || 0, // Default 0 if not provided\r\n+          weight,\r\n+        }),\r\n+      }\r\n+    );\r\n \r\n-  const response = await fetch(\r\n-    \"https://apiv2.shiprocket.in/v1/external/courier/serviceability/\",\r\n-    {\r\n-      method: \"POST\",\r\n-      headers: {\r\n-        \"Content-Type\": \"application/json\",\r\n-        \"Authorization\": `Bearer ${process.env.SHIPROCKET_TOKEN}`,\r\n-      },\r\n-      body: JSON.stringify({\r\n-        pickup_postcode,\r\n-        delivery_postcode,\r\n-        cod,\r\n-        weight,\r\n-      }),\r\n+    if (!response.ok) {\r\n+      return res.status(response.status).json({\r\n+        error: \"Failed to fetch from Shiprocket\",\r\n+        details: await response.text(),\r\n+      });\r\n     }\r\n-  );\r\n \r\n-  const data = await response.json();\r\n-  res.json(data);\r\n+    const data = await response.json();\r\n+    res.json(data);\r\n+\r\n+  } catch (error) {\r\n+    console.error(\"Shipping rate error:\", error);\r\n+    res.status(500).json({ error: \"Internal Server Error\" });\r\n+  }\r\n });\r\n \r\n+module.exports = router;\r\n"
+                },
+                {
+                    "date": 1756220991278,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n const express = require(\"express\");\r\n const router = express.Router();\r\n const fetch = require(\"node-fetch\"); // If using Node <18, install with `npm i node-fetch`\r\n-\r\n+require(\"dotenv\").config();\r\n // Shiprocket Shipping Rate API\r\n router.post(\"/api/shipping-rate\", async (req, res) => {\r\n   try {\r\n     const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n"
+                },
+                {
+                    "date": 1756221080897,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n const router = express.Router();\r\n const fetch = require(\"node-fetch\"); // If using Node <18, install with `npm i node-fetch`\r\n require(\"dotenv\").config();\r\n // Shiprocket Shipping Rate API\r\n-router.post(\"/api/shipping-rate\", async (req, res) => {\r\n+router.post(\"/\", async (req, res) => {\r\n   try {\r\n     const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n \r\n     if (!pickup_postcode || !delivery_postcode || !weight) {\r\n"
+                },
+                {
+                    "date": 1756221233225,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n const express = require(\"express\");\r\n const router = express.Router();\r\n-const fetch = require(\"node-fetch\"); // If using Node <18, install with `npm i node-fetch`\r\n require(\"dotenv\").config();\r\n+\r\n // Shiprocket Shipping Rate API\r\n router.post(\"/\", async (req, res) => {\r\n   try {\r\n     const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n@@ -16,9 +16,9 @@\n       {\r\n         method: \"POST\",\r\n         headers: {\r\n           \"Content-Type\": \"application/json\",\r\n-          Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`, // Make sure you set this in .env\r\n+          Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`, // loaded from .env\r\n         },\r\n         body: JSON.stringify({\r\n           pickup_postcode,\r\n           delivery_postcode,\r\n"
+                },
+                {
+                    "date": 1756221509531,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n \r\n     const response = await fetch(\r\n       \"https://apiv2.shiprocket.in/v1/external/courier/serviceability/\",\r\n       {\r\n-        method: \"POST\",\r\n+        method: \"GET\",\r\n         headers: {\r\n           \"Content-Type\": \"application/json\",\r\n           Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`, // loaded from .env\r\n         },\r\n"
+                },
+                {
+                    "date": 1756221530098,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n \r\n     const response = await fetch(\r\n       \"https://apiv2.shiprocket.in/v1/external/courier/serviceability/\",\r\n       {\r\n-        method: \"GET\",\r\n+        method: \"POST\",\r\n         headers: {\r\n           \"Content-Type\": \"application/json\",\r\n           Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`, // loaded from .env\r\n         },\r\n"
+                },
+                {
+                    "date": 1756221571457,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,25 +10,19 @@\n     if (!pickup_postcode || !delivery_postcode || !weight) {\r\n       return res.status(400).json({ error: \"Missing required fields\" });\r\n     }\r\n \r\n-    const response = await fetch(\r\n-      \"https://apiv2.shiprocket.in/v1/external/courier/serviceability/\",\r\n-      {\r\n-        method: \"POST\",\r\n-        headers: {\r\n-          \"Content-Type\": \"application/json\",\r\n-          Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`, // loaded from .env\r\n-        },\r\n-        body: JSON.stringify({\r\n-          pickup_postcode,\r\n-          delivery_postcode,\r\n-          cod: cod || 0, // Default 0 if not provided\r\n-          weight,\r\n-        }),\r\n-      }\r\n-    );\r\n+    // Build query string for GET request\r\n+    const url = `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickup_postcode}&delivery_postcode=${delivery_postcode}&cod=${cod || 0}&weight=${weight}`;\r\n \r\n+    const response = await fetch(url, {\r\n+      method: \"GET\",\r\n+      headers: {\r\n+        \"Content-Type\": \"application/json\",\r\n+        Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`,\r\n+      },\r\n+    });\r\n+\r\n     if (!response.ok) {\r\n       return res.status(response.status).json({\r\n         error: \"Failed to fetch from Shiprocket\",\r\n         details: await response.text(),\r\n"
+                }
+            ],
+            "date": 1756220656094,
+            "name": "Commit-0",
+            "content": "const express = require('express');\r\nconst router = express.Router();\r\n\r\n\r\n\r\n\r\n// Create new checkout\r\nrouter.post('/', async (req, res) => {\r\n  try {\r\n    const checkout = new Checkout(req.body);\r\n    await checkout.save();\r\n    res.status(201).json({ message: 'Checkout created successfully', data: checkout });\r\n  } catch (error) {\r\n    res.status(400).json({ message: 'Error creating checkout', error: error.message });\r\n  }\r\n});"
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "sourceFile": "routes/shipping/shiprocket-rates.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 7,
+            "patches": [
+                {
+                    "date": 1760002556872,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1760079085844,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,16 +4,16 @@\n \r\n // Shiprocket Shipping Rate API\r\n router.post(\"/\", async (req, res) => {\r\n   try {\r\n-    const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n+    const { pickup_postcode, delivery_postcode, cod, weight, length, breadth, height } = req.body;\r\n \r\n-    if (!pickup_postcode || !delivery_postcode || !weight) {\r\n+    if (!pickup_postcode || !delivery_postcode || !weight || !length || !breadth || !height) {\r\n       return res.status(400).json({ error: \"Missing required fields\" });\r\n     }\r\n \r\n     // Build query string for GET request\r\n-    const url = `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickup_postcode}&delivery_postcode=${delivery_postcode}&cod=${cod || 0}&weight=${weight}`;\r\n+    const url = `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickup_postcode}&delivery_postcode=${delivery_postcode}&cod=${cod || 0}&weight=${weight}&length=${length}&breadth=${breadth}&height=${height}`;\r\n \r\n     const response = await fetch(url, {\r\n       method: \"GET\",\r\n       headers: {\r\n"
+                },
+                {
+                    "date": 1760079663421,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n const router = express.Router();\r\n require(\"dotenv\").config();\r\n \r\n // Shiprocket Shipping Rate API\r\n-router.post(\"/\", async (req, res) => {\r\n+router.get(\"/\", async (req, res) => {\r\n   try {\r\n     const { pickup_postcode, delivery_postcode, cod, weight, length, breadth, height } = req.body;\r\n \r\n     if (!pickup_postcode || !delivery_postcode || !weight || !length || !breadth || !height) {\r\n"
+                },
+                {
+                    "date": 1760079717213,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,17 +2,16 @@\n const router = express.Router();\r\n require(\"dotenv\").config();\r\n \r\n // Shiprocket Shipping Rate API\r\n-router.get(\"/\", async (req, res) => {\r\n+router.get(\"/rates\", async (req, res) => {\r\n   try {\r\n-    const { pickup_postcode, delivery_postcode, cod, weight, length, breadth, height } = req.body;\r\n+    const { pickup_postcode, delivery_postcode, cod, weight, length, breadth, height } = req.query;\r\n \r\n     if (!pickup_postcode || !delivery_postcode || !weight || !length || !breadth || !height) {\r\n       return res.status(400).json({ error: \"Missing required fields\" });\r\n     }\r\n \r\n-    // Build query string for GET request\r\n     const url = `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickup_postcode}&delivery_postcode=${delivery_postcode}&cod=${cod || 0}&weight=${weight}&length=${length}&breadth=${breadth}&height=${height}`;\r\n \r\n     const response = await fetch(url, {\r\n       method: \"GET\",\r\n@@ -21,15 +20,8 @@\n         Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`,\r\n       },\r\n     });\r\n \r\n-    if (!response.ok) {\r\n-      return res.status(response.status).json({\r\n-        error: \"Failed to fetch from Shiprocket\",\r\n-        details: await response.text(),\r\n-      });\r\n-    }\r\n-\r\n     const data = await response.json();\r\n     res.json(data);\r\n \r\n   } catch (error) {\r\n"
+                },
+                {
+                    "date": 1760079782333,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n const router = express.Router();\r\n require(\"dotenv\").config();\r\n \r\n // Shiprocket Shipping Rate API\r\n-router.get(\"/rates\", async (req, res) => {\r\n+router.get(\"/\", async (req, res) => {\r\n   try {\r\n     const { pickup_postcode, delivery_postcode, cod, weight, length, breadth, height } = req.query;\r\n \r\n     if (!pickup_postcode || !delivery_postcode || !weight || !length || !breadth || !height) {\r\n"
+                },
+                {
+                    "date": 1760080166287,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,8 @@\n const express = require(\"express\");\r\n const router = express.Router();\r\n require(\"dotenv\").config();\r\n+const fetch = require(\"node-fetch\");\r\n \r\n // Shiprocket Shipping Rate API\r\n router.get(\"/\", async (req, res) => {\r\n   try {\r\n"
+                },
+                {
+                    "date": 1760080250949,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n const express = require(\"express\");\r\n const router = express.Router();\r\n require(\"dotenv\").config();\r\n-const fetch = require(\"node-fetch\");\r\n+// const fetch = require(\"node-fetch\");\r\n \r\n // Shiprocket Shipping Rate API\r\n router.get(\"/\", async (req, res) => {\r\n   try {\r\n"
+                },
+                {
+                    "date": 1760080263603,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,7 @@\n const express = require(\"express\");\r\n const router = express.Router();\r\n require(\"dotenv\").config();\r\n-// const fetch = require(\"node-fetch\");\r\n \r\n // Shiprocket Shipping Rate API\r\n router.get(\"/\", async (req, res) => {\r\n   try {\r\n"
+                }
+            ],
+            "date": 1760002556872,
+            "name": "Commit-0",
+            "content": "const express = require(\"express\");\r\nconst router = express.Router();\r\nrequire(\"dotenv\").config();\r\n\r\n// Shiprocket Shipping Rate API\r\nrouter.post(\"/\", async (req, res) => {\r\n  try {\r\n    const { pickup_postcode, delivery_postcode, cod, weight } = req.body;\r\n\r\n    if (!pickup_postcode || !delivery_postcode || !weight) {\r\n      return res.status(400).json({ error: \"Missing required fields\" });\r\n    }\r\n\r\n    // Build query string for GET request\r\n    const url = `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickup_postcode}&delivery_postcode=${delivery_postcode}&cod=${cod || 0}&weight=${weight}`;\r\n\r\n    const response = await fetch(url, {\r\n      method: \"GET\",\r\n      headers: {\r\n        \"Content-Type\": \"application/json\",\r\n        Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`,\r\n      },\r\n    });\r\n\r\n    if (!response.ok) {\r\n      return res.status(response.status).json({\r\n        error: \"Failed to fetch from Shiprocket\",\r\n        details: await response.text(),\r\n      });\r\n    }\r\n\r\n    const data = await response.json();\r\n    res.json(data);\r\n\r\n  } catch (error) {\r\n    console.error(\"Shipping rate error:\", error);\r\n    res.status(500).json({ error: \"Internal Server Error\" });\r\n  }\r\n});\r\n\r\nmodule.exports = router;\r\n"
+        }
+    ]
+}

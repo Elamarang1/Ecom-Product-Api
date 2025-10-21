@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1750266616571,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1761015107117,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,8 +26,15 @@\n   discount: String,\r\n   stock: Number,\r\n   new: Boolean,\r\n   tags: [String],\r\n+    // ✅ Product physical dimensions for shipping\r\n+  dimensions: {\r\n+    weight: { type: Number, required: true, default: 0 },   // in kg\r\n+    length: { type: Number, required: true, default: 0 },   // in cm\r\n+    breadth: { type: Number, required: true, default: 0 },  // in cm\r\n+    height: { type: Number, required: true, default: 0 }    // in cm\r\n+  },\r\n   variants: [VariantSchema],\r\n   images: [ImageSchema]\r\n });\r\n \r\n"
                 }
             ],
             "date": 1750266616571,

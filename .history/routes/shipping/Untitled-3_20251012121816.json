@@ -1,0 +1,163 @@
+    [   {
+                "air_max_weight": "0.00",
+                "api_edd": 1,
+                "assured_amount": 0,
+                "base_courier_id": null,
+                "base_weight": "",
+                "blocked": 0,
+                "call_before_delivery": "Not Available",
+                "charge_weight": 2,
+                "city": "Madurai",
+                "cod": 1,
+                "cod_charges": 36,
+                "cod_multiplier": 0.02,
+                "cost": "",
+                "courier_company_id": 32,
+                "courier_name": "Amazon Shipping Surface 2kg",
+                "courier_type": "0",
+                "coverage_charges": 0,
+                "cutoff_time": "09:00",
+                "delivery_boy_contact": "Not Available",
+                "delivery_performance": 1,
+                "description": "",
+                "edd": "",
+                "edd_fallback": {
+                    "bi": "courier_city_edd"
+                },
+                "entry_tax": 0,
+                "estimated_delivery_days": "2",
+                "etd": "Oct 13, 2025",
+                "etd_hours": 48,
+                "freight_charge": 119.54,
+                "id": 675752219,
+                "is_custom_rate": 0,
+                "is_hyperlocal": false,
+                "is_international": 0,
+                "is_rto_address_available": false,
+                "is_surface": true,
+                "local_region": 0,
+                "metro": 0,
+                "min_weight": 2,
+                "mode": 0,
+                "new_edd": 1,
+                "odablock": false,
+                "other_charges": 3,
+                "others": "{\"auto_pickup\":1,\"cancel_real_time\":true,\"is_cancellation_courier\":1,\"is_custom_courier\":1,\"is_edd_courier\":1,\"is_notify_cancel_courier\":1,\"is_webhook_courier\":1,\"min_breadth\":1,\"min_length\":1,\"wec\":1}",
+                "pickup_availability": "1",
+                "pickup_performance": 3.8,
+                "pickup_priority": "",
+                "pickup_supress_hours": 0,
+                "pod_available": "On Request",
+                "postcode": "625706",
+                "qc_courier": 0,
+                "rank": "",
+                "rate": 155.54,
+                "rating": 2.6,
+                "realtime_tracking": "Real Time",
+                "region": 2,
+                "rto_charges": 116,
+                "rto_performance": 2.5,
+                "seconds_left_for_pickup": 1169,
+                "secure_shipment_disabled": false,
+                "ship_type": 1,
+                "state": "TAMIL NADU",
+                "suppress_date": "Oct 11, 2025",
+                "suppress_text": "",
+                "suppression_dates": {
+                    "action_on": "2025-10-06 17:33:53",
+                    "blocked_fm": "",
+                    "blocked_lm": ""
+                },
+                "surface_max_weight": "4.00",
+                "tracking_performance": 3.3,
+                "volumetric_max_weight": null,
+                "weight_cases": 4.6,
+                "zone": "z_b"
+            },
+
+
+#   create oreder:
+
+          {
+    "order_id": 996788514,
+    "channel_order_id": "8336780569",
+    "shipment_id": 993188870,
+    "status": "NEW",
+    "status_code": 1,
+    "onboarding_completed_now": 0,
+    "awb_code": "",
+    "courier_company_id": "",
+    "courier_name": "",
+    "new_channel": false,
+    "packaging_box_error": ""
+}
+
+
+
+
+
+
+{
+    "awb_assign_status": 1,
+    "response": {
+        "data": {
+            "courier_company_id": 32,
+            "awb_code": "364240196634",
+            "cod": 0,
+            "order_id": 996788514,
+            "shipment_id": 993188870,
+            "awb_code_status": 1,
+            "assigned_date_time": {
+                "date": "2025-10-11 08:49:31.000000",
+                "timezone_type": 3,
+                "timezone": "Asia/Kolkata"
+            },
+            "applied_weight": 1.113,
+            "company_id": 4443549,
+            "courier_name": "Amazon Shipping Surface 2kg",
+            "child_courier_name": null,
+            "freight_charges": 119.54,
+            "pickup_scheduled_date": "2025-10-11 11:00:00",
+            "routing_code": "",
+            "rto_routing_code": null,
+            "invoice_no": "Retail00002",
+            "transporter_id": "",
+            "transporter_name": "",
+            "shipped_by": {
+                "shipper_company_name": "Elamaran",
+                "shipper_address_1": "Suriya Mansion No  298, 1, Jawaharlal Nehru Salai, Anjugam Nagar, West Jafferkhanpet, Chennai, Tamil Nadu 600083",
+                "shipper_address_2": "",
+                "shipper_city": "Chennai",
+                "shipper_state": "Tamil Nadu",
+                "shipper_country": "India",
+                "shipper_postcode": "600083",
+                "shipper_first_mile_activated": 0,
+                "shipper_phone": "8056946241",
+                "lat": "13.030502",
+                "long": "80.208896",
+                "shipper_email": "elamaran6543@gmail.com",
+                "extra_info": {
+                    "role": "Warehouse Manager",
+                    "source": 1,
+                    "open_time": "12:00 AM",
+                    "close_time": "12:30 AM",
+                    "select_days": "[\"Saturday\",\"Sunday\"]",
+                    "alternate_name": "",
+                    "alternate_role": "",
+                    "alternate_email": ""
+                },
+                "rto_company_name": "Elamaran",
+                "rto_address_1": "Suriya Mansion No  298, 1, Jawaharlal Nehru Salai, Anjugam Nagar, West Jafferkhanpet, Chennai, Tamil Nadu 600083",
+                "rto_address_2": "",
+                "rto_city": "Chennai",
+                "rto_state": "Tamil Nadu",
+                "rto_country": "India",
+                "rto_postcode": "600083",
+                "rto_phone": "8056946241",
+                "rto_email": "elamaran6543@gmail.com"
+            }
+        }
+    },
+    "no_pickup_popup": 0,
+    "quick_pick": 0
+}

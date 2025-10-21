@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 29,
+            "activePatchIndex": 40,
             "patches": [
                 {
                     "date": 1750214277307,
@@ -124,6 +124,50 @@
                 {
                     "date": 1755613168900,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -36,10 +36,10 @@\n const upload = multer({ storage: storage });\r\n \r\n \r\n const razorpay = new Razorpay({\r\n-  key_id: 'rzp_test_GYgMTUS1iaCs6o',\r\n-  key_secret: 'MxmnEAix8zMOg9xa02ynWt3G',\r\n+  key_id: 'rzp_live_R7CILED5jrwg1o',\r\n+  key_secret: 'bGKhX4qlJMVSYOsVfFTu85Gh',\r\n });\r\n \r\n mongoose.connect(\r\n   'mongodb+srv://softguiding:1uGWqXpyeGkZVYXf@cluster0.vzuo5fk.mongodb.net/product_db?retryWrites=true&w=majority',\r\n"
+                },
+                {
+                    "date": 1756221131617,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,8 +5,9 @@\n const path = require('path');\r\n const Razorpay = require('razorpay');\r\n const Product = require('./models/product');\r\n const checkoutRoutes = require('./routes/checkout');\r\n+const shippingRoutes = require('./routes/shipping');\r\n const cloudinary = require('cloudinary').v2;\r\n var cors = require('cors')\r\n const app = express();\r\n app.use(cors('*'));\r\n@@ -488,9 +489,9 @@\n \r\n \r\n \r\n app.use('/api/checkout', checkoutRoutes);\r\n-\r\n+app.use('/api/shipping-rate', shippingRoutes);\r\n // START SERVER\r\n app.listen(PORT, () => {\r\n   console.log(`🚀 Server running on http://localhost:${PORT}`);\r\n });\r\n"
+                },
+                {
+                    "date": 1756267141205,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -470,9 +470,9 @@\n       return res.status(400).json({ error: 'Missing required parameters' });\r\n     }\r\n \r\n     const options = {\r\n-      amount: amount * 100,\r\n+      amount: amount,\r\n       currency,\r\n       receipt,\r\n       payment_capture: 1\r\n     };\r\n"
+                },
+                {
+                    "date": 1760002725675,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,19 @@\n const Razorpay = require('razorpay');\r\n const Product = require('./models/product');\r\n const checkoutRoutes = require('./routes/checkout');\r\n const shippingRoutes = require('./routes/shipping');\r\n+\r\n+\r\n+// shipping API's\r\n+const shiprocketRates = require(\"./routes/shipping/shiprocket-rates\");\r\n+const shiprocketOrder = require(\"./routes/shipping/shiprocket-order\");\r\n+const shiprocketAssign = require(\"./routes/shipping/shiprocket-assign\");\r\n+const shiprocketLabel = require(\"./routes/shipping/shiprocket-label\");\r\n+const shiprocketPickup = require(\"./routes/shipping/shiprocket-pickup\");\r\n+const shiprocketTrack = require(\"./routes/shipping/shiprocket-track\");\r\n+\r\n+\r\n const cloudinary = require('cloudinary').v2;\r\n var cors = require('cors')\r\n const app = express();\r\n app.use(cors('*'));\r\n"
+                },
+                {
+                    "date": 1760002855187,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -500,9 +500,18 @@\n \r\n \r\n \r\n app.use('/api/checkout', checkoutRoutes);\r\n-app.use('/api/shipping-rate', shippingRoutes);\r\n+// app.use('/api/shipping-rate', shippingRoutes);\r\n+// shipping routes\r\n+app.use(\"/shipping/rates\", shiprocketRates);\r\n+app.use(\"/shipping/order\", shiprocketOrder);\r\n+app.use(\"/shipping/assign\", shiprocketAssign);\r\n+app.use(\"/shipping/label\", shiprocketLabel);\r\n+app.use(\"/shipping/pickup\", shiprocketPickup);\r\n+app.use(\"/shipping/track\", shiprocketTrack);\r\n+\r\n+\r\n // START SERVER\r\n app.listen(PORT, () => {\r\n   console.log(`🚀 Server running on http://localhost:${PORT}`);\r\n });\r\n"
+                },
+                {
+                    "date": 1760002865532,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -500,9 +500,8 @@\n \r\n \r\n \r\n app.use('/api/checkout', checkoutRoutes);\r\n-// app.use('/api/shipping-rate', shippingRoutes);\r\n // shipping routes\r\n app.use(\"/shipping/rates\", shiprocketRates);\r\n app.use(\"/shipping/order\", shiprocketOrder);\r\n app.use(\"/shipping/assign\", shiprocketAssign);\r\n"
+                },
+                {
+                    "date": 1760002872582,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -494,13 +494,8 @@\n     console.error('❌ Razorpay Order Error:', error);\r\n     res.status(500).json({ error: 'Failed to create Razorpay order' });\r\n   }\r\n });\r\n-\r\n-\r\n-\r\n-\r\n-\r\n app.use('/api/checkout', checkoutRoutes);\r\n // shipping routes\r\n app.use(\"/shipping/rates\", shiprocketRates);\r\n app.use(\"/shipping/order\", shiprocketOrder);\r\n"
+                },
+                {
+                    "date": 1760080157883,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,9 @@\n const Razorpay = require('razorpay');\r\n const Product = require('./models/product');\r\n const checkoutRoutes = require('./routes/checkout');\r\n const shippingRoutes = require('./routes/shipping');\r\n+const fetch = require(\"node-fetch\");\r\n \r\n \r\n // shipping API's\r\n const shiprocketRates = require(\"./routes/shipping/shiprocket-rates\");\r\n"
+                },
+                {
+                    "date": 1760080269802,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,8 @@\n const Razorpay = require('razorpay');\r\n const Product = require('./models/product');\r\n const checkoutRoutes = require('./routes/checkout');\r\n const shippingRoutes = require('./routes/shipping');\r\n-const fetch = require(\"node-fetch\");\r\n \r\n \r\n // shipping API's\r\n const shiprocketRates = require(\"./routes/shipping/shiprocket-rates\");\r\n"
+                },
+                {
+                    "date": 1761016165677,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -208,8 +208,17 @@\n         variant_id: variantIds\r\n       });\r\n     }\r\n \r\n+\r\n+        // ✅ Extract dimension fields from request body\r\n+    const dimensions = {\r\n+      weight: Number(payload.weight) || 0,\r\n+      length: Number(payload.length) || 0,\r\n+      breadth: Number(payload.breadth) || 0,\r\n+      height: Number(payload.height) || 0\r\n+    };\r\n+\r\n     const product = new Product({\r\n       title: payload.title,\r\n       description: payload.description,\r\n       type: payload.type,\r\n@@ -222,9 +231,10 @@\n       stock: Number(payload.stock),\r\n       new: payload.newProduct || false,\r\n       tags: [...(payload.tags || []), payload.brand || ''],\r\n       variants,\r\n-      images\r\n+      images,\r\n+      dimensions // ✅ add dimensions\r\n     });\r\n \r\n     await product.save();\r\n     res.status(201).json({ message: 'Product created', data: product });\r\n@@ -452,28 +462,9 @@\n     res.status(500).json({ error: err.message });\r\n   }\r\n });\r\n \r\n-// // DELETE\r\n-// app.delete('/api/products/:id', async (req, res) => {\r\n-//   try {\r\n-//     const deleted = await Product.findByIdAndDelete(req.params.id);\r\n-//     if (!deleted) return res.status(404).json({ error: 'Product not found' });\r\n \r\n-//     // Delete images from disk\r\n-//     deleted.images.forEach(img => {\r\n-//       const filePath = path.join(__dirname, img.src);\r\n-//       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);\r\n-//     });\r\n-\r\n-//     res.json({ message: 'Product deleted' });\r\n-//   } catch (err) {\r\n-//     res.status(500).json({ error: err.message });\r\n-//   }\r\n-// });\r\n-\r\n-\r\n-\r\n app.post('/api/razorpay/order', async (req, res) => {\r\n   try {\r\n     const { amount, currency, receipt } = req.body;\r\n \r\n"
+                },
+                {
+                    "date": 1761016524243,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -414,8 +414,16 @@\n         variant_id: variantIds\r\n       });\r\n     }\r\n \r\n+        // ✅ Extract dimension fields from request body\r\n+    const dimensions = {\r\n+      weight: Number(payload.weight) || 0,\r\n+      length: Number(payload.length) || 0,\r\n+      breadth: Number(payload.breadth) || 0,\r\n+      height: Number(payload.height) || 0\r\n+    };\r\n+\r\n     const updated = await Product.findByIdAndUpdate(\r\n       req.params.id,\r\n       {\r\n         title: payload.title,\r\n@@ -430,9 +438,10 @@\n         stock: Number(payload.stock),\r\n         new: payload.newProduct || false,\r\n         tags: [...(payload.tags || []), payload.brand || ''],\r\n         variants,\r\n-        images\r\n+        images,\r\n+        dimensions // ✅ add dimensions\r\n       },\r\n       { new: true }\r\n     );\r\n \r\n"
+                },
+                {
+                    "date": 1761016572757,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -116,67 +116,11 @@\n \r\n \r\n \r\n \r\n-// CREATE\r\n-// app.post('/api/products', async (req, res) => {\r\n-//   try {\r\n-//     const payload = req.body;\r\n \r\n-//     const images = [];\r\n-//     const variants = [];\r\n \r\n-//     (payload[\"images Details\"] || []).forEach(image => {\r\n-//       const imageId = imageIdCounter++;\r\n-//       const variantIds = [];\r\n \r\n-//       const filePath = saveBase64Image(image.src, imageId);\r\n-\r\n-//       image[\"variant Details\"].forEach(variant => {\r\n-//         const variantId = variantIdCounter++;\r\n-//         variants.push({\r\n-//           sku: variant.sku,\r\n-//           size: variant.size,\r\n-//           color: variant.color,\r\n-//           image_id: imageId\r\n-//         });\r\n-//         variantIds.push(variantId);\r\n-//       });\r\n-\r\n-//       images.push({\r\n-//         image_id: imageId,\r\n-//         alt: image.alt,\r\n-//         src: filePath,\r\n-//         variant_id: variantIds\r\n-//       });\r\n-//     });\r\n-\r\n-//     const product = new Product({\r\n-//       title: payload.title,\r\n-//       description: payload.description,\r\n-//       type: payload.type,\r\n-//       brand: payload.brand,\r\n-//       collection: payload.collection || [],\r\n-//       category: payload.category,\r\n-//       price: Number(payload.price),\r\n-//       sale: payload.sale || false,\r\n-//       discount: payload.discount,\r\n-//       stock: Number(payload.stock),\r\n-//       new: payload.newProduct || false,\r\n-//       tags: [...(payload.tags || []), payload.brand || ''],\r\n-//       variants,\r\n-//       images\r\n-//     });\r\n-\r\n-//     await product.save();\r\n-//     res.status(201).json({ message: 'Product created', data: product });\r\n-//   } catch (err) {\r\n-//     res.status(500).json({ error: err.message });\r\n-//   }\r\n-// });\r\n-\r\n-\r\n-\r\n // CREATE product\r\n app.post('/api/products', async (req, res) => {\r\n   try {\r\n     const payload = req.body;\r\n"
                 }
             ],
             "date": 1750214277307,

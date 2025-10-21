@@ -1,0 +1,18 @@
+{
+    "sourceFile": "routes/shipping/shiprocket-pickup.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1760002441481,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1760002441481,
+            "name": "Commit-0",
+            "content": "const express = require(\"express\");\r\nconst router = express.Router();\r\n\r\nrouter.post(\"/\", async (req, res) => {\r\n  try {\r\n    const { shipment_ids } = req.body; // array of shipment IDs\r\n\r\n    const response = await fetch(\r\n      \"https://apiv2.shiprocket.in/v1/external/courier/generate/pickup\",\r\n      {\r\n        method: \"POST\",\r\n        headers: {\r\n          \"Content-Type\": \"application/json\",\r\n          Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`,\r\n        },\r\n        body: JSON.stringify({ shipment_id: shipment_ids }),\r\n      }\r\n    );\r\n\r\n    const data = await response.json();\r\n    if (!response.ok) {\r\n      return res.status(response.status).json({\r\n        error: \"Pickup scheduling failed\",\r\n        details: data,\r\n      });\r\n    }\r\n\r\n    res.json(data);\r\n  } catch (error) {\r\n    console.error(\"Pickup scheduling error:\", error);\r\n    res.status(500).json({ error: \"Internal Server Error\" });\r\n  }\r\n});\r\n\r\nmodule.exports = router;\r\n"
+        }
+    ]
+}

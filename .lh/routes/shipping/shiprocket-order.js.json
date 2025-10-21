@@ -1,0 +1,18 @@
+{
+    "sourceFile": "routes/shipping/shiprocket-order.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1760002481005,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1760002481005,
+            "name": "Commit-0",
+            "content": "const express = require(\"express\");\r\nconst router = express.Router();\r\n\r\nrouter.post(\"/\", async (req, res) => {\r\n  try {\r\n    const orderData = req.body; // include all fields from frontend\r\n\r\n    const response = await fetch(\r\n      \"https://apiv2.shiprocket.in/v1/external/orders/create/adhoc\",\r\n      {\r\n        method: \"POST\",\r\n        headers: {\r\n          \"Content-Type\": \"application/json\",\r\n          Authorization: `Bearer ${process.env.SHIPROCKET_TOKEN}`,\r\n        },\r\n        body: JSON.stringify(orderData),\r\n      }\r\n    );\r\n\r\n    const data = await response.json();\r\n\r\n    if (!response.ok) {\r\n      return res.status(response.status).json({\r\n        error: \"Order creation failed\",\r\n        details: data,\r\n      });\r\n    }\r\n\r\n    res.json(data);\r\n  } catch (error) {\r\n    console.error(\"Order creation error:\", error);\r\n    res.status(500).json({ error: \"Internal Server Error\" });\r\n  }\r\n});\r\n\r\nmodule.exports = router;\r\n"
+        }
+    ]
+}
